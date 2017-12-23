@@ -6,19 +6,55 @@
 		      ("melpa" . "http://melpa.org/packages/")
 		      ("melpa-stable" . "http://stable.melpa.org/packages/"))
    package-archive-priorities '(("melpa-stable" . 1)))
-;some maybe useful packages paredit
-;;  (add-to-list
-;;   'package-archives
-;;   '("melpa" . "http://melpa.org/packages/")
-;;   t)
+                                        ;some maybe useful packages paredit
+  ;;  (add-to-list
+  ;;   'package-archives
+  ;;   '("melpa" . "http://melpa.org/packages/")
+  ;;   t)
   (package-initialize))
+
+(defun copy-all ()
+  (interactive)
+  (progn
+    (mark-page)
+    (kill-ring-save 0 2)))
+
+(defun xah-copy-all-or-region ()
+  "Put the whole buffer content to `kill-ring', or text selection if there's one.
+Respects `narrow-to-region'.
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
+Version 2015-08-22"
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (kill-new (buffer-substring (region-beginning) (region-end)))
+        (message "Text selection copied."))
+    (progn
+      (kill-new (buffer-string))
+      (message "Buffer content copied."))))
+
+(global-set-key (kbd "C-c a") 'xah-copy-all-or-region)
+
+(setq initial-frame-alist '((top . 0) (left . 0) (width . 80) (height . 35))
+      org-log-done 'time
+      tab-width 2
+      js-indent-level 2)
+
+
+(add-to-list 'auto-mode-alist '("\\.ash\\'" . c-mode))
+(add-to-list 'auto-mode-alist '("\\.gani\\'" . js-mode))
+(add-to-list 'default-frame-alist '(font . "InputMono"))
 (setq-default indent-tabs-mode nil)
+;; (setq js-indent-level 2)
+;; (setq tab-width 2)
 (require 'auto-complete)
 (require 'use-package)
 (global-auto-complete-mode t)
 (electric-pair-mode t)
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+(add-hook 'haskell-mode-hook 'intero-mode)
+(add-hook 'clojure-mode-hook 'paredit-mode)
 
 ;(add-to-list 'load-path
 ;             "~/path-to-yasnippet")
@@ -71,10 +107,12 @@
  '(hl-fg-colors
    (quote
     ("#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36" "#002b36")))
+ '(inhibit-startup-screen t)
  '(magit-diff-use-overlays nil)
  '(nrepl-message-colors
    (quote
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
+ '(org-agenda-files nil)
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
