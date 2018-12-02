@@ -7,17 +7,31 @@
 		      ("melpa-stable" . "http://stable.melpa.org/packages/"))
    package-archive-priorities '(("melpa-stable" . 1)))
                                         ;some maybe useful packages paredit
-  ;;  (add-to-list
-  ;;   'package-archives
-  ;;   '("melpa" . "http://melpa.org/packages/")
-  ;;   t)
   (package-initialize))
+
+(defvar my-packages
+  '(material-theme
+    elpy
+    py-autopep8
+    flycheck))
 
 (when (not package-archives)
   (package-refresh-contents))
 
-(defvar my-packages
-  '(material-theme))
+;; Python Stuff
+
+(elpy-enable)
+
+;; currently can't use on windows without diff package
+;; (require 'py-autopep8)
+;; (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+(when (require 'flycheck nil t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+;; (require 'py-yapf)
+;; (add-hook 'python-mode-hook 'py-yapf-enable-on-save)
 
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode)
@@ -64,6 +78,11 @@ Version 2015-08-22"
 (global-set-key (kbd "C-c w") 'overwrite-mode)
 (global-set-key (kbd "C-;") 'comment-line)
 
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+
 (setq initial-frame-alist '((top . 0) (left . 0) (width . 170) (height . 40))
       org-log-done 'time
       tab-width 2
@@ -78,10 +97,15 @@ Version 2015-08-22"
 (setq-default indent-tabs-mode nil)
 ;; (setq js-indent-level 2)
 ;; (setq tab-width 2)
+
 (require 'auto-complete)
 (require 'use-package)
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
 (global-auto-complete-mode t)
 (electric-pair-mode t)
+
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 (add-hook 'haskell-mode-hook 'intero-mode)
@@ -151,7 +175,7 @@ Version 2015-08-22"
  '(org-agenda-files nil)
  '(package-selected-packages
    (quote
-    (racket-mode paredit company solarized-theme clojure-mode cider lua-mode rust-mode xahk-mode ahk-mode monokai-theme use-package auto-complete)))
+    (py-yapf racket-mode paredit company solarized-theme clojure-mode cider lua-mode rust-mode xahk-mode ahk-mode monokai-theme use-package auto-complete)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
